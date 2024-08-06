@@ -1,0 +1,33 @@
+:root {
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    --blue-dark: #132C47;
+    --blue-mid: #294C63;
+    --blue-light-mid: #78AEAD;
+    --blue-light: #D4ECE9;
+    --orange: #D86350;
+    --yellow: #FBAE54;
+
+    background: radial-gradient(ellipse 180% 200% at 60% 0% in oklab, var(--blue-dark) 0, var(--blue-mid), var(--blue-light-mid));
+    color: var(--blue-light-mid);
+
+    min-width: 100%;
+    min-height: 100%;
+}
+
+#app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+
+    min-height: 2000px;
+}
