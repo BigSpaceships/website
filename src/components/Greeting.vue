@@ -35,4 +35,16 @@ h1 {
 
     margin: -20px 0px;
 }
+
+@media screen and (max-width: 700px) {
+    .greeting {
+        margin: auto;
+
+        text-align: center;
+    }
+
+    .greeting h1 {
+        font-size: 3.4em;
+    }
+}
 </style>
