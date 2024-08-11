@@ -8,7 +8,9 @@ type Star = {
     y: number,
     vx: number,
     vy: number,
-    expiration: number,
+    scale: number,
+    duration: number,
+    startTime: number,
 }
 
 const stars = ref([] as Star[]);
@@ -35,7 +37,7 @@ function updateStars(currentTime: DOMHighResTimeStamp) {
     const deltaTime = lastTime - currentTime;
 
     for (let i = 0; i < stars.value.length; i++) {
-        if (stars.value[i].expiration <= currentTime) {
+        if (stars.value[i].duration + stars.value[i].startTime <= currentTime) {
             stars.value.splice(i, 1);
 
             i--;
@@ -63,7 +65,7 @@ function updateStars(currentTime: DOMHighResTimeStamp) {
 function spawnStar(currentTime: DOMHighResTimeStamp) {
     for (let i = 0; i < 25; i++) {
         const theta = Math.random() * Math.PI * 2;
-        const dist = Math.random() * 3;
+        const dist = Math.random() * 4 + 1;
 
         const velocity = Math.random() * .08;
 
@@ -74,9 +76,15 @@ function spawnStar(currentTime: DOMHighResTimeStamp) {
             y: props.mouseY + Math.sin(theta) * dist,
             vx: Math.cos(theta) * velocity,
             vy: Math.sin(theta) * velocity,
-            expiration: currentTime + duration,
+            duration,
+            scale: Math.random() * 2 + 4,
+            startTime: currentTime,
         });
     }
+}
+
+function easeSizeScale(progress: number): number {
+    return 1 - 0.6 * Math.exp(3 * (progress - 1));
 }
 
 onMounted(() => {
@@ -92,7 +100,7 @@ onUnmounted(() => {
 
 <template>
     <div class="star-container">
-        <Star v-for="star in stars" :x="star.x" :y="star.y" />
+        <Star v-for="star in stars" :x="star.x" :y="star.y" :scale="star.scale * easeSizeScale((lastTime - star.startTime) / star.duration)"/>
     </div>
 </template>
 
