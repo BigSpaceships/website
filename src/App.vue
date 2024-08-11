@@ -9,14 +9,12 @@ const mouseY = ref(0);
 const click = ref(false);
 
 function mouseMove(e: MouseEvent) {
-    mouseX.value = e.clientX;
-    mouseY.value = e.clientY;
 }
 
 function mouseClick(e: MouseEvent) {
     click.value = true;
-    mouseX.value = e.clientX;
-    mouseY.value = e.clientY;
+    mouseX.value = e.offsetX;
+    mouseY.value = e.offsetY;
 }
 
 function clickHandled() {

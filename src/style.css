@@ -15,6 +15,8 @@
     --blue-light: #D4ECE9;
     --orange: #D86350;
     --yellow: #FBAE54;
+    
+    background-color: var(--blue-dark);
 
     background: radial-gradient(ellipse 180% 200% at 60% 0% in oklab, var(--blue-dark) 0, var(--blue-mid), var(--blue-light-mid));
     color: var(--blue-light-mid);
@@ -24,6 +26,8 @@
 }
 
 #app {
+    position: relative;
+
     max-width: 1280px;
     margin: 0 auto;
     padding: 2rem;
