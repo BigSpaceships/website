@@ -4,32 +4,89 @@ import { ref, onMounted, onUnmounted } from "vue";
 import Star from "./Star.vue"
 
 type Star = {
-    x: Number,
-    y: Number,
+    x: number,
+    y: number,
+    vx: number,
+    vy: number,
+    expiration: number,
 }
-
-let updateId = 0;
 
 const stars = ref([] as Star[]);
 
 const props = defineProps({
-    mouseX: Number,
-    mouseY: Number,
+    mouseX: { type: Number, required: true },
+    mouseY: { type: Number, required: true },
+    clicked: { type: Boolean, required: true },
 });
 
-function updateStars() {
-    stars.value.push({
-        x: props.mouseX,
-        y: props.mouseY,
-    });
+const emit = defineEmits<{
+    (e: "processedClick"): void
+}>();
+
+let isMounted = false;
+
+let lastTime = 0;
+
+function updateStars(currentTime: DOMHighResTimeStamp) {
+    if (!isMounted) {
+        return;
+    }
+
+    const deltaTime = lastTime - currentTime;
+
+    for (let i = 0; i < stars.value.length; i++) {
+        if (stars.value[i].expiration <= currentTime) {
+            stars.value.splice(i, 1);
+
+            i--;
+
+            continue;
+        }
+
+        stars.value[i].x += stars.value[i].vx * deltaTime;
+        stars.value[i].y += stars.value[i].vy * deltaTime;
+
+        stars.value[i].vy += .0001 * deltaTime;
+    }
+
+    if (props.clicked) {
+        spawnStar(currentTime);
+
+        emit("processedClick");
+    }
+
+    lastTime = currentTime;
+
+    window.requestAnimationFrame(updateStars);
+}
+
+function spawnStar(currentTime: DOMHighResTimeStamp) {
+    for (let i = 0; i < 25; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const dist = Math.random() * 3;
+
+        const velocity = Math.random() * .08;
+
+        const duration = Math.random() * 700 + 300;
+
+        stars.value.push({
+            x: props.mouseX + Math.cos(theta) * dist,
+            y: props.mouseY + Math.sin(theta) * dist,
+            vx: Math.cos(theta) * velocity,
+            vy: Math.sin(theta) * velocity,
+            expiration: currentTime + duration,
+        });
+    }
 }
 
 onMounted(() => {
-    updateId = window.setInterval(updateStars, 100);
+    isMounted = true;
+
+    window.requestAnimationFrame(updateStars);
 });
 
 onUnmounted(() => {
-    window.clearInterval(updateId);
+    isMounted = false;
 });
 </script>
 
@@ -40,14 +97,14 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-    .star-container {
-        position: fixed;
-        
-        top: 0;
-        left: 0;
+.star-container {
+    position: fixed;
 
-        width: 100%;
-        height: 100%;
-        z-index: 10;
-    }
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
 </style>

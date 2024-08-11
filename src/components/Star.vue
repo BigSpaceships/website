@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 
 const props = defineProps({
-    x: Number,
-    y: Number,
+    x: { type: Number, required: true },
+    y: { type: Number, required: true },
 });
 </script>
 
 <template>
-    <div class="star" :style="{top: props.y + 'px', left: props.x + 'px'}">
+    <div class="star" :style="{ top: props.y + 'px', left: props.x + 'px' }">
     </div>
 </template>
 
