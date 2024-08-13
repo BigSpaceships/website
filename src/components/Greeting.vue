@@ -13,15 +13,18 @@
 
 <style scoped>
 .greeting {
+    display: inline-block;
+
     text-align: left;
 
     margin: 160px 80px;
+    padding: 20px;
 }
 
 h4 {
     font-size: 1.25em;
     font-weight: 300;
-    
+
     color: var(--yellow);
 
     margin: 10px 7px;

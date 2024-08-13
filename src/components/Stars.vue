@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, Ref } from "vue";
 
 import Star from "./Star.vue"
 
@@ -15,19 +15,30 @@ type Star = {
 
 const stars = ref([] as Star[]);
 
-const props = defineProps({
-    mouseX: { type: Number, required: true },
-    mouseY: { type: Number, required: true },
-    clicked: { type: Boolean, required: true },
-});
+const starContainer: Ref<HTMLDivElement | null> = ref(null);
 
-const emit = defineEmits<{
-    (e: "processedClick"): void
-}>();
+const mouseX = ref(0);
+const mouseY = ref(0);
+
+const click = ref(false);
 
 let isMounted = false;
 
 let lastTime = 0;
+
+let nextRandomStarTime = 0;
+
+function mouseClick(e: MouseEvent) {
+    console.log("click");
+
+    click.value = true;
+    mouseX.value = e.offsetX;
+    mouseY.value = e.offsetY;
+}
+
+function clickHandled() {
+    click.value = false;
+}
 
 function updateStars(currentTime: DOMHighResTimeStamp) {
     if (!isMounted) {
@@ -51,10 +62,16 @@ function updateStars(currentTime: DOMHighResTimeStamp) {
         stars.value[i].vy += .0001 * deltaTime;
     }
 
-    if (props.clicked) {
-        spawnStar(currentTime);
+    if (click.value) {
+        spawnStarCluster(currentTime);
 
-        emit("processedClick");
+        clickHandled();
+    }
+
+    if (nextRandomStarTime <= currentTime) {
+        spawnRandomStar(currentTime);
+
+        nextRandomStarTime = currentTime + Math.random() * 200 + 100;
     }
 
     lastTime = currentTime;
@@ -62,7 +79,7 @@ function updateStars(currentTime: DOMHighResTimeStamp) {
     window.requestAnimationFrame(updateStars);
 }
 
-function spawnStar(currentTime: DOMHighResTimeStamp) {
+function spawnStarCluster(currentTime: DOMHighResTimeStamp) {
     for (let i = 0; i < 25; i++) {
         const theta = Math.random() * Math.PI * 2;
         const dist = Math.random() * 4 + 1;
@@ -72,8 +89,8 @@ function spawnStar(currentTime: DOMHighResTimeStamp) {
         const duration = Math.random() * 700 + 300;
 
         stars.value.push({
-            x: props.mouseX + Math.cos(theta) * dist,
-            y: props.mouseY + Math.sin(theta) * dist,
+            x: mouseX.value + Math.cos(theta) * dist,
+            y: mouseY.value + Math.sin(theta) * dist,
             vx: Math.cos(theta) * velocity,
             vy: Math.sin(theta) * velocity,
             duration,
@@ -81,6 +98,35 @@ function spawnStar(currentTime: DOMHighResTimeStamp) {
             startTime: currentTime,
         });
     }
+}
+
+function spawnRandomStar(currentTime: DOMHighResTimeStamp) {
+    if (starContainer.value == null) return;
+
+    const width = starContainer.value.clientWidth;
+    const height = window.innerHeight;
+    const x = Math.random() * width;
+    let y = (Math.random() * 2 - 1);
+
+    const boundingRect = starContainer.value.getBoundingClientRect();
+
+    const center = -boundingRect.y + window.innerHeight / 2;
+    const halfHeight = height / 2;
+
+    const newOffset = y + .2 * Math.pow(Math.abs(y) / 1.5, .3) * Math.sign(y);
+
+    y = center + newOffset * halfHeight;
+
+    const duration = Math.random() * 400 + 400;
+
+    stars.value.push({
+        x, y,
+        vx: Math.random() * .03,
+        vy: Math.random() * .04 - .01,
+        duration,
+        scale: Math.random() * 2 + 3,
+        startTime: currentTime,
+    });
 }
 
 function easeSizeScale(progress: number): number {
@@ -99,20 +145,24 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="star-container">
-        <Star v-for="star in stars" :x="star.x" :y="star.y" :scale="star.scale * easeSizeScale((lastTime - star.startTime) / star.duration)"/>
+    <div class="star-container" ref="starContainer" @click="mouseClick">
+        <Star v-for="star in stars" :x="star.x" :y="star.y"
+            :scale="star.scale * easeSizeScale((lastTime - star.startTime) / star.duration)" />
     </div>
 </template>
 
 <style scoped>
 .star-container {
-    position: absolute;
+    position: absolute!important;
 
     top: 0;
     left: 0;
 
     width: 100%;
     height: 100%;
-    z-index: 10;
+
+    overflow: hidden;
+
+    z-index: 0!important;
 }
 </style>
