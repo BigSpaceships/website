@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from "vue"
+import { onMounted  } from "vue"
 import Greeting from "./components/Greeting.vue"
 import Stars from "./components/Stars.vue"
 
