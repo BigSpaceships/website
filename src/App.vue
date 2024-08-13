@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted  } from "vue"
+import { onMounted } from "vue"
 import Greeting from "./components/Greeting.vue"
 import Stars from "./components/Stars.vue"
 
@@ -16,12 +16,12 @@ onMounted(() => {
 </script>
 
 <template>
-    <Greeting class="no-stars"/>
+    <Greeting class="no-stars" />
     <Stars />
 </template>
 
 <style>
-#app > * {
+#app>* {
     position: relative;
     z-index: 1;
 }
