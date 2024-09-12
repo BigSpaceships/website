@@ -1,0 +1,17 @@
+
+tasks:
+  - init: npm install
+    command: npm run dev
+
+ports: 
+  - name: Website
+    description: Port 57173 for vite hosting
+    port: 5173
+    visibility: public
+    onOpen: ignore
+vscode:
+  extensions:
+    - Vue.volar
+    - eamodio.gitlens
+    - enkia.tokyo-night
+  
