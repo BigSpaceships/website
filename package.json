@@ -9,13 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@vue/typescript-plugin": "^2.0.29",
-    "vue": "^3.4.31"
+    "@vue/typescript-plugin": "^2.1.6",
+    "vue": "^3.5.4"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",
     "typescript": "^5.5.4",
-    "vite": "^5.3.4",
+    "vite": "^5.4.4",
     "vue-tsc": "^2.0.24"
   }
 }
