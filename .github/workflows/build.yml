@@ -20,6 +20,9 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env: 
+  VITE_BASE: "/website/"
+
 jobs:
   # Single deploy job since we're just deploying
   deploy:
