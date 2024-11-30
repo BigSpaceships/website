@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from "vue"
-import Greeting from "./components/Greeting.vue"
+import Header from "./components/Header.vue"
 import Stars from "./components/Stars.vue"
-import Moon from "./components/Moon.vue"
+
+import { RouterView } from "vue-router";
 
 onMounted(() => {
     const elements = document.getElementsByClassName("no-stars");
@@ -17,9 +18,9 @@ onMounted(() => {
 </script>
 
 <template>
-    <Greeting class="no-stars" />
-    <Moon />
     <Stars />
+    <Header />
+    <RouterView />
 </template>
 
 <style>
