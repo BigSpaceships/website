@@ -1,0 +1,49 @@
+services: 
+  watchtower:
+    image: containrrr/watchtower 
+    command: 
+      - "--label-enable"
+      - "--interval"
+      - "30"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+  reverse-proxy:
+    image: traefik:v3.2
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesResolvers.resolver.acme.tlschallenge=true"
+      - "--certificatesResolvers.resolver.acme.email=bigspaceships@gmail.com"
+      - "--certificatesResolvers.resolver.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock
+  signaling:
+    image: ghcr.io/bigspaceships/signaling:latest
+    environment: 
+      MAIN_SERVER: "TRUE"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.signaling.rule=Host(`signaling.noahhanford.com`)"
+      - "traefik.http.routers.signaling.entrypoints=websecure"
+      - "traefik.http.routers.signaling.tls.certresolver=resolver"
+      - "com.centurylinklabs.watchtower.enable=true"
+  website:
+    image: ghcr.io/bigspaceships/website:latest
+    labels: 
+      - "traefik.enable=true"
+      - "traefik.http.routers.website.rule=Host(`noahhanford.com`)"
+      - "traefik.http.routers.website.entrypoints=websecure"
+      - "traefik.http.routers.website.tls.certresolver=resolver"
+      - "com.centurylinklabs.watchtower.enable=true"
+volumes:
+  letsencrypt:
