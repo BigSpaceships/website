@@ -20,6 +20,9 @@ services:
       - "--entrypoints.web.address=:80"
       - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
       - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entryPoints.web.observability.accessLogs=true"
+      - "--entryPoints.web.observability.metrics=true"
+      - "--entryPoints.web.observability.tracing=true"
     ports:
       - "80:80"
       - "443:443"
@@ -37,6 +40,9 @@ services:
       - "traefik.http.routers.signaling.entrypoints=websecure"
       - "traefik.http.routers.signaling.tls.certresolver=resolver"
       - "com.centurylinklabs.watchtower.enable=true"
+    deploy:
+      mode: replicated
+      replicas: 0
   website:
     image: ghcr.io/bigspaceships/website:latest
     labels: 
@@ -56,6 +62,7 @@ services:
     cap_add:
       - NET_ADMIN
     ports:
+      - 8006:8006/tcp
       - 5900:5900/tcp
       - 5900:5900/udp
     volumes:
@@ -64,9 +71,13 @@ services:
     stop_grace_period: 2m
     labels:
       - "traefik.enable=true"
+      - "traefik.http.routers.mac.service=mac"
       - "traefik.http.routers.mac.rule=Host(`macos.noahhanford.com`)"
-      - "traefik.http.routers.mac.entrypoints=websecure"
-      - "traefik.http.routers.mac.tls.certresolver=resolver"
       - "com.centurylinklabs.watchtower.enable=true"
+      - "traefik.http.servers.mac.loadbalancer.service.port=8006"
+      - "traefik.http.routers.my-router.observability.metrics=true"
+      - "traefik.http.routers.my-router.observability.accessLogs=true"
+      - "traefik.http.routers.my-router.observability.tracing=true"
+      - "traefik.http.routers.my-router.observability.traceVerbosity=detailed"
 volumes:
   letsencrypt:
