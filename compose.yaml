@@ -45,5 +45,28 @@ services:
       - "traefik.http.routers.website.entrypoints=websecure"
       - "traefik.http.routers.website.tls.certresolver=resolver"
       - "com.centurylinklabs.watchtower.enable=true"
+  macos:
+    image: dockurr/macos
+    environment:
+      VERSION: "13"
+      KVM: "N"
+    devices:
+      - "/dev/kvm:/dev/kvm"
+      - "/dev/net/tun:/dev/net/tun"
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 5900:5900/tcp
+      - 5900:5900/udp
+    volumes:
+      - /home/nowah/macos:/storage
+    restart: always
+    stop_grace_period: 2m
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mac.rule=Host(`macos.noahhanford.com`)"
+      - "traefik.http.routers.mac.entrypoints=websecure"
+      - "traefik.http.routers.mac.tls.certresolver=resolver"
+      - "com.centurylinklabs.watchtower.enable=true"
 volumes:
   letsencrypt:
