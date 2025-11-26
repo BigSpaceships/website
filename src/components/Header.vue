@@ -24,4 +24,10 @@ header nav ul {
     text-align: right;
 }
 
+@media screen and (max-width: 700px) {
+    header {
+        display: none;
+    }
+}
+
 </style>

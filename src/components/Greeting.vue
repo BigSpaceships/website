@@ -53,5 +53,13 @@ h1 {
     .greeting h1 {
         font-size: 3.4em;
     }
+
+    .greeting h4 {
+        margin-top: 1em;
+    }
+
+    .greeting .greeting-location {
+        display: block;
+    }
 }
 </style>

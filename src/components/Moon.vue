@@ -25,9 +25,9 @@
     top: -250px;
 }
 
-@media only screen and (max-width: 760px) {
+@media only screen and (max-width: 700px) {
     .art.moon {
-        width: 75%;
+        width: 85%;
     }
 
     .moon-container {
