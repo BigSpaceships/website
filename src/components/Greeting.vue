@@ -7,7 +7,7 @@
         <h1>Noah</h1>
         <h1>Hanford</h1>
 
-        <h4>High School Student</h4>
+        <h4>Software Engineering <span class="greeting-location">@ <a href="https://www.rit.edu/">RIT</a></span></h4>
     </div>
 </template>
 
@@ -28,6 +28,10 @@ h4 {
     color: var(--yellow);
 
     margin: 10px 7px;
+}
+
+h4 a, h4 a:visited {
+    color: unset;
 }
 
 h1 {
