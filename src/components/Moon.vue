@@ -22,6 +22,17 @@
 
     display: block;
 
-    margin-top: -250px;
+    top: -250px;
+}
+
+@media only screen and (max-width: 760px) {
+    .art.moon {
+        width: 75%;
+    }
+
+    .moon-container {
+        top: 250px;
+        right: -30px;
+    }
 }
 </style>
