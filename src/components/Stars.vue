@@ -91,6 +91,10 @@ function updateStars(currentTime: DOMHighResTimeStamp) {
         // spawnStarCluster(currentTime);
         spawnFirework(currentTime);
 
+        if (false) {
+            spawnStarCluster(currentTime);
+        }
+
         clickHandled();
     }
 
