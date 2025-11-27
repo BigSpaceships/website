@@ -13,6 +13,8 @@ type Star = {
     duration: number,
     startTime: number,
     color: ColorInstance,
+    leavesTrail: boolean,
+    lastTrailTime: DOMHighResTimeStamp,
 }
 
 const stars = ref([] as Star[]);
@@ -64,8 +66,30 @@ function updateStars(currentTime: DOMHighResTimeStamp) {
         stars.value[i].vy += .0001 * deltaTime;
     }
 
+    for (let i = 0; i < stars.value.length; i++) {
+        const star = stars.value[i];
+        if (star.leavesTrail && star.lastTrailTime + 100 <= currentTime) {
+            const velocityDamp = Math.random() * 0.4 + 0.1;
+            stars.value.push({
+                x: star.x,
+                y: star.y,
+                vx: star.vx * velocityDamp,
+                vy: star.vy * velocityDamp,
+                scale: star.scale * 0.3,
+                duration: star.duration * 0.8,
+                startTime: currentTime,
+                color: Color('yellow'),
+                leavesTrail: false,
+                lastTrailTime: currentTime,
+            });
+
+            star.lastTrailTime = currentTime;
+        }
+    }
+
     if (click.value) {
-        spawnStarCluster(currentTime);
+        // spawnStarCluster(currentTime);
+        spawnFirework(currentTime);
 
         clickHandled();
     }
@@ -79,6 +103,30 @@ function updateStars(currentTime: DOMHighResTimeStamp) {
     lastTime = currentTime;
 
     window.requestAnimationFrame(updateStars);
+}
+
+function spawnFirework(currentTime: DOMHighResTimeStamp) {
+    for (let i = 0; i < 40; i++) {
+        const theta = Math.random() * Math.PI * 2;
+        const dist = Math.random() * 0 + 1;
+
+        const velocity = Math.random() * .03 + .09;
+
+        const duration = Math.random() * 300 + 800;
+
+        stars.value.push({
+            x: mouseX.value + Math.cos(theta) * dist,
+            y: mouseY.value + Math.sin(theta) * dist,
+            vx: Math.cos(theta) * velocity,
+            vy: Math.sin(theta) * velocity,
+            duration,
+            scale: Math.random() * 2 + 4,
+            startTime: currentTime,
+            color: Color('red'),
+            leavesTrail: true,
+            lastTrailTime: currentTime,
+        });
+    }
 }
 
 function spawnStarCluster(currentTime: DOMHighResTimeStamp) {
@@ -99,6 +147,8 @@ function spawnStarCluster(currentTime: DOMHighResTimeStamp) {
             scale: Math.random() * 2 + 4,
             startTime: currentTime,
             color: Color('white'),
+            leavesTrail: false,
+            lastTrailTime: currentTime,
         });
     }
 }
@@ -129,7 +179,9 @@ function spawnRandomStar(currentTime: DOMHighResTimeStamp) {
         duration,
         scale: Math.random() * 2 + 3,
         startTime: currentTime,
-        color: Color('white')
+        color: Color('white'),
+        leavesTrail: false,
+        lastTrailTime: currentTime,
     });
 }
 
