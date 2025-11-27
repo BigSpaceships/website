@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted, Ref } from "vue";
 
 import Star from "./Star.vue"
+import Color, { ColorInstance } from "color";
 
 type Star = {
     x: number,
@@ -11,6 +12,7 @@ type Star = {
     scale: number,
     duration: number,
     startTime: number,
+    color: ColorInstance,
 }
 
 const stars = ref([] as Star[]);
@@ -96,6 +98,7 @@ function spawnStarCluster(currentTime: DOMHighResTimeStamp) {
             duration,
             scale: Math.random() * 2 + 4,
             startTime: currentTime,
+            color: Color('white'),
         });
     }
 }
@@ -126,6 +129,7 @@ function spawnRandomStar(currentTime: DOMHighResTimeStamp) {
         duration,
         scale: Math.random() * 2 + 3,
         startTime: currentTime,
+        color: Color('white')
     });
 }
 
@@ -147,7 +151,8 @@ onUnmounted(() => {
 <template>
     <div class="star-container" ref="starContainer" @click="mouseClick">
         <Star v-for="star in stars" :x="star.x" :y="star.y"
-            :scale="star.scale * easeSizeScale((lastTime - star.startTime) / star.duration)" />
+            :scale="star.scale * easeSizeScale((lastTime - star.startTime) / star.duration)"
+            :color="star.color"/>
     </div>
 </template>
 
